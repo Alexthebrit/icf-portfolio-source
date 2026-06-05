@@ -96,9 +96,11 @@
       {
         "from": "py-scripts",
         "to": "py-scripts",
-        "filter": [
-          "**/*.py"
-        ]
+        "filter": ["**/*.py"]
+      },
+      {
+        "from": "scripts/sync-to-s3.sh",
+        "to": "scripts/sync-to-s3.sh"
       }
     ],
     "publish": {

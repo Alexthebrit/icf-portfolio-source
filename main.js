@@ -745,6 +745,8 @@ let serverState = {
   lastBuildAt: null,
   lastBuildOk: null,
   lastBuildLine: '',
+  s3SyncOk: null,
+  s3SyncLine: '',
 };
 
 function getPythonCommand() {
@@ -813,6 +815,8 @@ function getServerStatePublic() {
     lastBuildAt: serverState.lastBuildAt,
     lastBuildOk: serverState.lastBuildOk,
     lastBuildLine: serverState.lastBuildLine,
+    s3SyncOk: serverState.s3SyncOk,
+    s3SyncLine: serverState.s3SyncLine,
   };
 }
 
@@ -908,6 +912,50 @@ function runOneBuild(boxFolder, reason) {
     serverState.lastBuildLine = code === 0
       ? `${new Date().toLocaleTimeString()} — built (${reason})`
       : `${new Date().toLocaleTimeString()} — build failed (${reason})`;
+    emitServerState();
+    if (code === 0) syncToS3(boxFolder);
+  });
+}
+
+function syncToS3(boxFolder) {
+  const syncScript = app.isPackaged
+    ? path.join(process.resourcesPath, 'scripts', 'sync-to-s3.sh')
+    : path.join(__dirname, 'scripts', 'sync-to-s3.sh');
+
+  if (!fs.existsSync(syncScript)) {
+    console.warn('[s3-sync] sync-to-s3.sh not found at', syncScript);
+    return;
+  }
+
+  serverState.s3SyncLine = `${new Date().toLocaleTimeString()} — syncing to web…`;
+  emitServerState();
+
+  const proc = spawn('bash', [syncScript], {
+    env: { ...process.env, ICF_BOX_ROOT: boxFolder },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  let lastLine = '';
+  const onData = (b) => {
+    const lines = b.toString().split('\n').filter(Boolean);
+    if (lines.length) lastLine = lines[lines.length - 1];
+  };
+  proc.stdout.on('data', onData);
+  proc.stderr.on('data', onData);
+
+  proc.on('close', (code) => {
+    serverState.s3SyncOk = code === 0;
+    serverState.s3SyncLine = code === 0
+      ? `${new Date().toLocaleTimeString()} — web synced`
+      : `${new Date().toLocaleTimeString()} — web sync failed`;
+    console.log('[s3-sync]', serverState.s3SyncLine, '| last:', lastLine);
+    emitServerState();
+  });
+
+  proc.on('error', (err) => {
+    serverState.s3SyncOk = false;
+    serverState.s3SyncLine = `${new Date().toLocaleTimeString()} — web sync error: ${err.message}`;
+    console.error('[s3-sync] spawn error:', err);
     emitServerState();
   });
 }
