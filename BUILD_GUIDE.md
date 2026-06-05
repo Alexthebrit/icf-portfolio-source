@@ -282,6 +282,8 @@ All five artifacts are required:
 - `*.blockmap` files — delta update support
 - `latest-mac.yml` — manifest electron-updater reads to discover new versions
 
+> **Trigger the Windows build:** After publishing the macOS release, push the source to GitHub to automatically kick off the Windows build (see §5.9). The Windows installer will appear in this same release once the CI workflow finishes.
+
 Users on networks where GitHub is reachable can hit Settings → About → "Check for updates" to pull the new version. ICF colleagues on restrictive corporate networks won't see anything happen — they install from Box directly (next step).
 
 ### 5.7 Copy the DMG to Box (PRIMARY distribution channel)
@@ -304,22 +306,15 @@ rm "/Users/36981/Library/CloudStorage/Box-Box/Clients/BGE/portfolio-master/ICF C
 2. On GitHub: https://github.com/Alexthebrit/icf-portfolio-releases/releases — confirm all five files attached.
 3. Optional: trash the local copy of the app, mount the Box DMG, install, launch. Verify it picks up auto-updates correctly.
 
-### 5.9 Build the Windows Installer (optional, via GitHub Actions)
+### 5.9 Build the Windows Installer (automatic via GitHub Actions)
 
-The Windows installer (NSIS `.exe`) is built on GitHub's `windows-latest` runners, not locally. There are no PyInstaller binaries — the Python scripts are bundled as raw `.py` files in `extraResources`, and Windows users need Python installed (the app uses `python` on Windows vs `python3` on macOS).
+The Windows installer (NSIS `.exe`) is built automatically by GitHub Actions whenever you push source to `Alexthebrit/icf-portfolio-source`. There are no PyInstaller binaries — the Python scripts are bundled as raw `.py` files in `extraResources`, and Windows users need Python installed (the app uses `python` on Windows vs `python3` on macOS).
 
-**Setup (one-time):**
+**Setup (one-time — already done for v0.4.15):**
 
-1. Push the source code to a GitHub repo so the workflow can check it out. You can use a new private repo or a branch in the existing releases repo:
+1. Create a private source repo:
    ```bash
-   # Create a new private repo (recommended)
    gh repo create Alexthebrit/icf-portfolio-source --private
-   cd "/Users/36981/Desktop/ICF Portfolio App/v0.4.15"
-   git init
-   git add -A
-   git commit -m "v0.4.15 source"
-   git remote add origin https://github.com/Alexthebrit/icf-portfolio-source.git
-   git push -u origin main
    ```
 
 2. Set up a `RELEASE_TOKEN` secret in the source repo (GitHub → Settings → Secrets and variables → Actions):
@@ -327,19 +322,28 @@ The Windows installer (NSIS `.exe`) is built on GitHub's `windows-latest` runner
    - Add it as a secret named `RELEASE_TOKEN` in the source repo's Action secrets
    - This token needs write access to `Alexthebrit/icf-portfolio-releases`
 
-**Per-release:**
+**Per-release (the automatic flow):**
 
-After you've completed steps 5.1–5.8 (macOS DMG published to GitHub Releases), trigger the Windows build:
+1. Complete steps 5.1–5.5 as normal (code changes → bump version → build macOS DMG → notarize)
+2. Push the version-bumped source to GitHub — this triggers the Windows build automatically:
+   ```bash
+   cd "/Users/36981/Desktop/ICF Portfolio App/v0.X.Y"
+   git add -A && git commit -m "vX.Y.Z"
+   git push
+   ```
+3. While the Windows build runs in CI, publish the macOS DMG to GitHub Releases (step 5.6):
+   ```bash
+   gh release create "vX.Y.Z" --repo Alexthebrit/icf-portfolio-releases ...
+   ```
+4. The Windows build, when it finishes, will detect the release already exists and upload `ICF-Creative-Portfolio-X.Y.Z-Setup.exe` + `latest.yml` alongside the macOS artifacts.
 
-```bash
-gh workflow run "Build Windows Installer" --repo Alexthebrit/icf-portfolio-source
-```
+> **Order doesn't matter:** If the Windows build finishes first, it creates the release with just the `.exe`. When you then run `gh release create` for macOS, it will upload the DMGs and the Windows assets stay in place. If macOS publishes first, the Windows build appends its files to the existing release.
 
-This will:
-1. Check out the source on `windows-latest`
-2. Run `npm ci` to install Node dependencies
-3. Run `npx electron-builder --win nsis --x64` to produce `ICF-Creative-Portfolio-X.Y.Z-Setup.exe` + `latest.yml`
-4. Upload both files to the existing GitHub release on `Alexthebrit/icf-portfolio-releases`
+**What the workflow does:**
+1. Checks out the source on `windows-latest`
+2. Runs `npm ci` to install Node dependencies
+3. Runs `npx electron-builder --win nsis --x64` to produce `ICF-Creative-Portfolio-X.Y.Z-Setup.exe` + `latest.yml`
+4. Uploads both files to the matching GitHub release on `Alexthebrit/icf-portfolio-releases`
 
 Users running the Windows version will see auto-update prompts from `electron-updater` reading `latest.yml`.
 
