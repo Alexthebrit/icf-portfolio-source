@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ICF Creative Portfolio — User Guide</title>
+<style>
+  @page { size: Letter; margin: 0.75in 0.85in 0.85in 0.85in; }
+  :root {
+    --ink: #0f1a2a;
+    --ink-soft: #455372;
+    --ink-faint: #7b87a1;
+    --bg-soft: #f6f7fb;
+    --bg-tint: #eef2f7;
+    --rule: #dde3ec;
+    --accent: #1d2f5e;
+    --accent-soft: #e8edf7;
+    --ok: #0f5d3a;
+    --ok-bg: #dcfce7;
+    --warn: #92400e;
+    --warn-bg: #fef3c7;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    font-size: 11pt;
+    line-height: 1.55;
+  }
+  .cover {
+    page-break-after: always;
+    text-align: left;
+    padding-top: 2.2in;
+  }
+  .cover .eyebrow {
+    font-size: 11pt;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.5em;
+  }
+  .cover h1 {
+    font-size: 36pt;
+    font-weight: 800;
+    margin: 0 0 0.15em 0;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+  }
+  .cover .subtitle {
+    font-size: 14pt;
+    color: var(--ink-soft);
+    font-weight: 400;
+    margin-bottom: 2.2em;
+    max-width: 5.5in;
+  }
+  .cover .meta {
+    border-top: 2px solid var(--ink);
+    padding-top: 1.2em;
+    font-size: 10pt;
+    color: var(--ink-soft);
+    max-width: 4.5in;
+  }
+  .cover .meta div { margin-bottom: 0.35em; }
+  .cover .meta strong { color: var(--ink); font-weight: 600; }
+  h1 {
+    font-size: 22pt;
+    font-weight: 800;
+    margin: 0 0 0.25em 0;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  h2 {
+    font-size: 15pt;
+    font-weight: 700;
+    margin: 1.6em 0 0.4em 0;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.25em;
+  }
+  h3 {
+    font-size: 12pt;
+    font-weight: 700;
+    margin: 1.2em 0 0.3em 0;
+    color: var(--ink);
+  }
+  p { margin: 0 0 0.8em 0; }
+  ul, ol { margin: 0 0 0.9em 0; padding-left: 1.2em; }
+  li { margin-bottom: 0.35em; }
+  code {
+    font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace;
+    background: var(--bg-tint);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 9.5pt;
+    color: var(--ink);
+  }
+  pre {
+    background: var(--bg-soft);
+    border: 1px solid var(--rule);
+    padding: 10px 14px;
+    border-radius: 5px;
+    font-family: "SF Mono", Menlo, Monaco, monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    overflow-x: auto;
+    margin: 0.5em 0 1em 0;
+  }
+  pre code { background: none; padding: 0; }
+  .lead {
+    font-size: 12pt;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 1.4em;
+  }
+  .callout {
+    background: var(--bg-soft);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    margin: 1em 0;
+    border-radius: 0 5px 5px 0;
+  }
+  .callout strong { color: var(--accent); }
+  .callout.warn {
+    background: var(--warn-bg);
+    border-left-color: var(--warn);
+  }
+  .callout.warn strong { color: var(--warn); }
+  .pill {
+    display: inline-block;
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 2px 9px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    background: var(--bg-tint);
+    color: var(--ink-soft);
+    vertical-align: middle;
+    margin-left: 0.4em;
+  }
+  .pill.ok { background: var(--ok-bg); color: var(--ok); }
+  .pill.warn { background: var(--warn-bg); color: var(--warn); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.8em 0 1.2em 0;
+    font-size: 10pt;
+  }
+  th, td {
+    text-align: left;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    background: var(--bg-soft);
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 9.5pt;
+    letter-spacing: 0.01em;
+  }
+  .step {
+    display: flex;
+    gap: 14px;
+    margin: 0.6em 0;
+    padding: 12px 14px;
+    background: var(--bg-soft);
+    border-radius: 6px;
+  }
+  .step .num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 11pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step .body { flex: 1; }
+  .step h4 {
+    font-size: 11pt;
+    font-weight: 700;
+    margin: 0 0 0.2em 0;
+  }
+  .step p { margin: 0; font-size: 10pt; color: var(--ink-soft); }
+  .footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 1em;
+    margin-top: 2em;
+    font-size: 9pt;
+    color: var(--ink-faint);
+  }
+  .section { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<!-- ============= COVER PAGE ============= -->
+<div class="cover">
+  <div class="eyebrow">ICF Next</div>
+  <h1>ICF Creative Portfolio</h1>
+  <div class="subtitle">A desktop browser for our team's creative work — installed, used, and updated from your Mac.</div>
+  <div class="meta">
+    <div><strong>For:</strong> ICF Next creative team</div>
+    <div><strong>Platform:</strong> macOS (Apple Silicon)</div>
+    <div><strong>App version at time of writing:</strong> v0.4.13</div>
+    <div><strong>Last updated:</strong> 2026-05-27</div>
+    <div><strong>Maintainer:</strong> Alex Gordon (`amgphotoshop@gmail.com` / `alexthebritgordon@gmail.com`)</div>
+  </div>
+</div>
+
+<!-- ============= WHAT IT IS ============= -->
+<div class="section">
+<h1>What is this?</h1>
+<p class="lead">The ICF Creative Portfolio is a desktop app for browsing the team's creative work — every project, every banner, every postcard, organized by client and program. It lives on your Mac. It reads files from Box. And it stays current automatically.</p>
+
+<h2>Why a desktop app and not just a website?</h2>
+<p>Because the work lives in Box, and Box's online-only files don't load well in a regular browser. The desktop app is a thin wrapper around the same portfolio you'd see in a browser — but it can read files directly from your local Box mount, including PDFs, large images, and videos, without choking on Box's quirky permissions.</p>
+
+<h2>What you can do with it</h2>
+<ul>
+  <li>Browse every project from every client in one place</li>
+  <li>Switch between <strong>Cards</strong>, <strong>Matrix</strong>, <strong>List</strong>, and <strong>Tiles</strong> views</li>
+  <li>Group by program or by month</li>
+  <li>Filter by asset type (emails, banners, postcards, social, etc.)</li>
+  <li>Search across all clients</li>
+  <li>Compare projects side-by-side</li>
+  <li>Open PDFs and images in their native viewers</li>
+</ul>
+</div>
+
+<!-- ============= INSTALLATION ============= -->
+<div class="section">
+<h1>Installation</h1>
+<p class="lead">First-time setup takes about 60 seconds.</p>
+
+<h2>Step 1 — Get the DMG</h2>
+<p>The current installer lives in our shared Box folder:</p>
+<pre>Box / Clients / BGE / portfolio-master / ICF Creative Portfolio-X.Y.Z-arm64.dmg</pre>
+<p>If your teammate sent you a Box link, click it and download the DMG.</p>
+
+<div class="callout">
+  <strong>Tip:</strong> Drag the DMG to your <em>Desktop</em> before opening it. Opening DMGs directly from inside Box can fail because Box may lock the file mid-mount.
+</div>
+
+<h2>Step 2 — Install</h2>
+<div class="step">
+  <div class="num">1</div>
+  <div class="body">
+    <h4>Double-click the DMG</h4>
+    <p>A window opens showing the app icon and an Applications shortcut.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="num">2</div>
+  <div class="body">
+    <h4>Drag <em>ICF Creative Portfolio</em> onto the Applications shortcut</h4>
+    <p>It copies to your /Applications folder.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="num">3</div>
+  <div class="body">
+    <h4>Eject the DMG</h4>
+    <p>Right-click the mounted disk on your desktop → Eject.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="num">4</div>
+  <div class="body">
+    <h4>Launch from Applications</h4>
+    <p>Find "ICF Creative Portfolio" in /Applications and double-click. macOS may ask if you're sure you want to open it — yes, you are.</p>
+  </div>
+</div>
+
+<h2>Step 3 — First-launch setup</h2>
+<p>On first launch, the app asks where your Box folder lives. The default is usually correct:</p>
+<pre>~/Library/CloudStorage/Box-Box</pre>
+<p>If the app auto-detects this and finds the portfolio inside, you won't see a picker at all — the window just opens to the portfolio.</p>
+<p>If you see a folder picker, navigate to your Box-Box folder and click <strong>Open</strong>. The app remembers this choice for future launches; you can change it later from Settings.</p>
+
+<div class="callout warn">
+  <strong>If the app hangs on launch with no window:</strong> your Box folder may still be downloading files in the background after a Box Drive reset. Wait a few minutes and try again. If it still hangs, see Troubleshooting at the end of this guide.
+</div>
+</div>
+
+<!-- ============= USING THE APP ============= -->
+<div class="section">
+<h1>Using the app</h1>
+
+<h2>The sidebar</h2>
+<p>The left sidebar has:</p>
+<ul>
+  <li><strong>Client dropdown</strong> at the top — switch between BGE, SMECO, PSE&G, PNM, etc.</li>
+  <li><strong>Search bar</strong> — type to filter projects across the whole client by name or job number.</li>
+  <li><strong>BY TYPE</strong> dropdown — narrow to just emails, banners, postcards, etc.</li>
+  <li><strong>Notes</strong> — select a note to view shared review-meeting notes for this client, or click <strong>+ New Note</strong> to create one.</li>
+  <li><strong>Project list</strong> — clickable links to each project. Groups by Program or Month depending on your settings.</li>
+  <li><strong>↻ Refresh</strong> at the bottom — pulls the latest builds. The app will also prompt you with a toast notification whenever new work arrives.</li>
+  <li><strong>⚙ Settings</strong> — opens the Settings panel (next section).</li>
+</ul>
+
+<h2>The main viewer</h2>
+<p>Click any project to load it. The default layout is <strong>Matrix</strong> — a grid of thumbnails. You can switch layouts at any time using the toolbar above the project:</p>
+<ul>
+  <li><strong>Cards</strong> — large thumbnails with metadata</li>
+  <li><strong>Matrix</strong> — tight grid of thumbnails (default)</li>
+  <li><strong>List</strong> — compact rows</li>
+  <li><strong>Tiles</strong> — variable-size tiles</li>
+</ul>
+<p>Click any thumbnail to open the full asset. PDFs and PNGs open in your default browser; office docs (Word, Excel) open in a preview panel.</p>
+
+<h2>Compare mode</h2>
+<p>Click the <strong>Compare</strong> button in the toolbar to put two projects side-by-side. Each side has its own client/year/program/project dropdowns so you can mix and match across clients.</p>
+
+<h2>Shared Notes</h2>
+<p>In the sidebar, under the Notes section, you can view, add, and edit shared notes for the current client. This is useful for storing review-meeting notes or campaign guidelines.</p>
+<ul>
+  <li>Notes are saved to the shared Box folder and are instantly visible to the whole team.</li>
+  <li>If the <strong>+ New Note</strong> button is hidden, it means your local API server isn't running (see the <strong>Server mode</strong> section). Turn on Server mode to add or edit notes.</li>
+</ul>
+</div>
+
+<!-- ============= SETTINGS ============= -->
+<div class="section">
+<h1>Settings</h1>
+<p>Open Settings by clicking <strong>⚙ Settings</strong> at the bottom of the sidebar. There are four tabs:</p>
+
+<h2>Display tab</h2>
+<table>
+  <tr><th>Setting</th><th>What it does</th></tr>
+  <tr><td>Default layout</td><td>Which view (Cards / Matrix / List / Tiles) each project loads in.</td></tr>
+  <tr><td>Default grouping</td><td>How projects are grouped in the sidebar: by Program, by Month, or None.</td></tr>
+  <tr><td>Default tile size</td><td>Starting thumbnail size before you touch the slider.</td></tr>
+  <tr><td>Sidebar starts collapsed</td><td>Useful on smaller screens.</td></tr>
+  <tr><td>Reset preferences</td><td>Wipes layout/group/size choices and starts over.</td></tr>
+</table>
+
+<h2>Clients tab</h2>
+<p>Shows every client the portfolio knows about, with job counts and last-build time. Built-in clients (BGE, SMECO, PSE&G, PNM) can't be deleted; user-added clients can be edited or removed.</p>
+<p>Click <strong>+ Add Client</strong> to register a new client with its own logo, color, and folder mapping.</p>
+
+<h2>Server tab <span class="pill ok">Advanced</span></h2>
+<p>This is where you opt in to being the team's "build server" — the one machine that watches Box for new files and rebuilds the portfolio for everyone. Most people leave this off. See the next section for how this works.</p>
+
+<h2>About tab</h2>
+<p>Shows your app version, your Box folder, and a <strong>Check for updates</strong> button. The app now auto-checks for updates shortly after launch, then downloads in the background and shows a <strong>Restart to update</strong> prompt when it's ready. The button is still there if you want to manually retry the check. If your network can't reach GitHub, install manually from the Box DMG instead.</p>
+</div>
+
+<!-- ============= SERVER MODE ============= -->
+<div class="section">
+<h1>Server mode <span class="pill">Optional</span></h1>
+<p class="lead">By default, your copy of the app is read-only. Someone, somewhere, has to actually run the build pipeline that scans Box for new creative work and refreshes the portfolio. That someone is whoever flips on Server mode.</p>
+
+<h2>How it works</h2>
+<p>When you toggle <strong>Run build server on this machine</strong> in Settings → Server:</p>
+<ul>
+  <li>The app spawns a Python build process in the background. It scans Box for new projects every 60 seconds (or every 3 minutes if fswatch isn't installed).</li>
+  <li>The app spawns a small local HTTP server on <code>localhost:8765</code> for API endpoints (used by the in-app Settings panel to edit clients).</li>
+  <li>The app writes a heartbeat to <code>Clients/BGE/portfolio-master/.builder-active.json</code> every 30 seconds so other people's apps know that you're "active."</li>
+</ul>
+
+<h2>Who should run it?</h2>
+<p>Just one person at a time. The status pill at the top of the Server tab tells you what's happening:</p>
+<table>
+  <tr>
+    <td><span class="pill">Idle</span></td>
+    <td>No one is currently running the server. If you flip it on, you become the active builder.</td>
+  </tr>
+  <tr>
+    <td><span class="pill warn">Active: someone-else's Mac</span></td>
+    <td>Someone else is already running it. You don't need to. (If you flip it on anyway, the app will ask if you want to take over.)</td>
+  </tr>
+  <tr>
+    <td><span class="pill ok">Running on this Mac</span></td>
+    <td>You are the active builder. Leave the app running.</td>
+  </tr>
+</table>
+
+<h2>When the active builder goes offline</h2>
+<p>If the previous active builder hasn't sent a heartbeat in over 2 minutes (laptop closed, internet down, app quit), their lock becomes "stale." Anyone else can take over without prompting.</p>
+<p>This means: if Alex closes his laptop at 5pm and goes home, and a teammate needs to push a new build at 7pm, they can just open the app, flip on Server mode, and it works — no manual handoff.</p>
+
+<h2>What it costs you</h2>
+<p>The build process is CPU-light when there's nothing to do (it just checks file timestamps). A full rebuild after many new files takes 1–3 minutes and uses some RAM. You can leave it running all day with no noticeable impact on other work.</p>
+
+<h2>A note about the Clients and Notes features</h2>
+<p>The <strong>Clients</strong> tab in Settings (where you add/edit/delete clients) and the <strong>Notes</strong> feature in the sidebar both need a small API to be running on <code>localhost:8765</code>. That API is part of the server pipeline. So: <strong>if the in-app server toggle is OFF, the Clients tab and Notes feature will be in read-only mode</strong> (the "+ New Note" button will be hidden). If you need to edit a client or add a note, toggle the server on first, make your edits, then optionally toggle it off again.</p>
+</div>
+
+<!-- ============= UPDATES ============= -->
+<div class="section">
+<h1>Updates</h1>
+<p class="lead">The app now checks GitHub for updates automatically after it opens. If that background check can't reach GitHub, new versions still land in Box and can be installed manually.</p>
+
+<h2>How you'll know there's a new version</h2>
+<p>The current DMG in Box has the version number in its filename — e.g. <code>ICF Creative Portfolio-0.3.0-arm64.dmg</code>. Compare it to the version shown in <strong>Settings → About → App version</strong>. If Box has a higher number, install the newer DMG.</p>
+
+<div class="callout">
+  <strong>Why keep the Box DMG around?</strong> The app now auto-checks safely after the window finishes loading, but some ICF Macs still may not be able to reach GitHub Releases. The shared Box DMG remains the fallback path for those machines.
+</div>
+
+<h2>Installing a newer version (over the top)</h2>
+<div class="step">
+  <div class="num">1</div>
+  <div class="body">
+    <h4>Quit the running app</h4>
+    <p>⌘Q from the menu bar. If it's not responding, force-quit (⌥⌘Esc).</p>
+  </div>
+</div>
+<div class="step">
+  <div class="num">2</div>
+  <div class="body">
+    <h4>Drag the new DMG out of Box to your Desktop</h4>
+    <p>Always copy to your Desktop first — opening DMGs from inside Box occasionally fails.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="num">3</div>
+  <div class="body">
+    <h4>Open the DMG, drag the app to /Applications</h4>
+    <p>macOS will ask if you want to replace the existing app. Say yes.</p>
+  </div>
+</div>
+<div class="step">
+  <div class="num">4</div>
+  <div class="body">
+    <h4>Eject the DMG, launch the new version from Applications</h4>
+    <p>Your settings, Box folder selection, and any local data are preserved.</p>
+  </div>
+</div>
+
+<h2>The "Check for updates" button</h2>
+<p>The app checks automatically on launch, but there's still a <strong>Check for updates</strong> button in Settings → About. Use it if you want to retry immediately. If your network allows GitHub, the app will download the new version and prompt you to restart. If it just spins or never finishes, your network is blocking GitHub — fall back to the manual Box install instead.</p>
+
+<h2>If something looks broken after an update</h2>
+<p>The most common issue after upgrading is a partial install state. To fully reset:</p>
+<pre>1. Quit the app (⌘Q)
+2. Drag /Applications/ICF Creative Portfolio.app to Trash
+3. Open Finder → press ⌘⇧G → paste:
+   ~/Library/Application Support/ICF Creative Portfolio
+4. Drag that folder to Trash
+5. Empty Trash
+6. Reinstall from the Box DMG</pre>
+<p>This wipes your local app preferences (Box folder selection, layout choices) and gives you a fully clean install. You'll re-pick your Box folder on first launch.</p>
+</div>
+
+<!-- ============= TROUBLESHOOTING ============= -->
+<div class="section">
+<h1>Troubleshooting</h1>
+
+<h3>The app opens but shows a blank window — empty client dropdown, no projects</h3>
+<p>This is almost always Box's "online-only" file stubs. Box doesn't actually download files until you access them; when you first install, the manifest files (<code>clients.js</code>, <code>manifest-*.js</code>) may not be on your Mac yet.</p>
+<p><strong>Fix:</strong></p>
+<ol>
+  <li>Quit the app.</li>
+  <li>In Finder, navigate to <code>Box-Box / Clients / BGE / portfolio-master</code>.</li>
+  <li>Right-click the <strong>portfolio-master</strong> folder → <strong>"Make Available Offline"</strong> (or "Always Keep On This Device").</li>
+  <li>Wait 1–3 minutes for the cloud-icon overlays to disappear from the files inside.</li>
+  <li>Reopen the app.</li>
+</ol>
+<p>You only need to do this once. After that, Box keeps the folder synced automatically.</p>
+
+<h3>The app won't open / hangs without showing a window</h3>
+<p>This was a bug in older versions. If you're still seeing it, you have an outdated version. Get the latest DMG from Box and reinstall (see Updates section above).</p>
+
+<h3>The app says "That folder doesn't look like your Box folder"</h3>
+<p>Box hasn't finished syncing yet, or the team's portfolio folder hasn't been shared with you. Confirm you can navigate to <code>Box-Box / Clients / BGE / portfolio-master</code> in Finder and that you see an <code>index.html</code> file inside. If you don't, ask whoever owns the Box shared link to re-invite you.</p>
+
+<h3>Some projects show "No assets" even though I know there are files</h3>
+<p>Two possible reasons:</p>
+<ul>
+  <li><strong>Box hasn't downloaded those files yet.</strong> Box uses "online-only" stubs for files you haven't opened. The build script can only see files that exist locally. Right-click the project folder in Finder → <em>Make Available Offline</em> to force-download it. Wait a minute, then click Refresh in the portfolio sidebar.</li>
+  <li><strong>The build hasn't run since those files arrived.</strong> Click ↻ Refresh in the sidebar. If the active builder is offline, ask someone to flip on Server mode.</li>
+</ul>
+
+<h3>Settings → Clients tab shows "read-only mode"</h3>
+<p>That means there's no local API server running. The Clients tab uses a small Python server on <code>localhost:8765</code> to add/edit/delete clients. To enable editing: <strong>Settings → Server → flip "Run build server on this machine" ON</strong>. The pill should turn green within a few seconds, and the Clients tab will become editable.</p>
+<p>If you don't intend to run the server, the Clients tab will remain read-only — that's normal. Only the person designated as the active builder needs the toggle on.</p>
+
+<h3>"Check for updates" button just spins forever</h3>
+<p>Your network is blocking GitHub (some ICF corporate Macs do this). That's fine — the app will still work normally. Just fall back to manual installs from Box when you need a newer version.</p>
+
+<h3>The auto-refresh toast keeps appearing</h3>
+<p>That means the build server is actively republishing the portfolio. Click <strong>Refresh</strong> and it'll go away.</p>
+
+<h3>I see a sync conflict / .conflict file in the portfolio folder</h3>
+<p>Two people accidentally ran the build server at the same time. The heartbeat lock should prevent this, but if you see conflict files:</p>
+<ol>
+  <li>Coordinate with the team to make sure only one person has Server mode on.</li>
+  <li>Delete the <code>.conflict</code> files in <code>Clients/BGE/portfolio-master/</code>.</li>
+  <li>Wait for the next build to overwrite cleanly.</li>
+</ol>
+
+<h3>I think there's a bug</h3>
+<p>Note what you did, what you expected, and what happened. Tell Alex or whoever is currently maintaining the app. Bonus points for a screenshot.</p>
+</div>
+
+<!-- ============= FOR DEVELOPERS / MAINTAINERS ============= -->
+<div class="section">
+<h1>For developers and future maintainers</h1>
+<p class="lead">If you're modifying the app's code, packaging a new release, or troubleshooting from a technical angle — read the build guide.</p>
+
+<h2>Where the build guide lives</h2>
+<p>The build guide is kept in <strong>two places</strong> so it's always findable:</p>
+<ol>
+  <li><strong>Box (canonical archive)</strong> — accessible to the whole team:
+    <pre>Box / Clients / BGE / portfolio-master / Source / BUILD_GUIDE.md</pre>
+  </li>
+  <li><strong>Alex's Mac (working copy)</strong> — the version being actively edited:
+    <pre>/Users/36981/Desktop/ICF Portfolio App/v0.1.0/BUILD_GUIDE.md</pre>
+  </li>
+</ol>
+<p>If you've inherited this project, start with the Box copy. It's kept in sync via a helper script (<code>scripts/sync-source-to-box.sh</code>) that the maintainer runs after each release.</p>
+
+<h2>Where the app's source lives</h2>
+<p>The complete source code is in Box at <code>portfolio-master / Source /</code> — anyone on the team can grab it. The same source also lives on Alex's local Mac (where it's actively developed).</p>
+<table>
+  <tr><th>What</th><th>Box (archive)</th><th>Alex's Mac (working)</th></tr>
+  <tr>
+    <td>Electron app</td>
+    <td><code>portfolio-master / Source / electron-app /</code></td>
+    <td><code>/Users/36981/Desktop/ICF Portfolio App/v0.1.0/</code></td>
+  </tr>
+  <tr>
+    <td>Python engine (build + serve scripts)</td>
+    <td><code>portfolio-master / Source / python-engine /</code></td>
+    <td><code>/Users/36981/Desktop/ICF Portfolio Site/</code></td>
+  </tr>
+  <tr>
+    <td>UI (HTML/CSS/JS) — edit here for cosmetic changes</td>
+    <td colspan="2"><code>Box / Clients / BGE / portfolio-master / index.html</code> (live, no rebuild needed)</td>
+  </tr>
+  <tr>
+    <td>Releases (DMG history)</td>
+    <td colspan="2"><a href="https://github.com/Alexthebrit/icf-portfolio-releases">github.com/Alexthebrit/icf-portfolio-releases</a></td>
+  </tr>
+</table>
+
+<h2>Opening it in your code editor</h2>
+<p>Cursor, VS Code, or any editor. The simplest path for someone inheriting the project:</p>
+<pre># Copy the source out of Box to your local Desktop
+cp -R "$HOME/Library/CloudStorage/Box-Box/Clients/BGE/portfolio-master/Source" ~/Desktop/ICF-Portfolio-Source
+
+cd ~/Desktop/ICF-Portfolio-Source/electron-app
+npm install
+code .   # or: cursor .</pre>
+<p>The <code>BUILD_GUIDE.md</code> at the root of the <code>Source/</code> folder is required reading.</p>
+
+<h2>The 30-second mental model</h2>
+<ul>
+  <li><strong>App look &amp; feel</strong> → edit <code>index.html</code> in Box. Reload the app with ⌘R. Done.</li>
+  <li><strong>App behavior / Electron logic</strong> → edit <code>main.js</code> or <code>preload.js</code>, then rebuild + notarize + publish a new release. The build guide has the exact commands.</li>
+  <li><strong>Build engine / what gets thumbnailed and indexed</strong> → edit <code>build-portfolio.py</code>, copy into <code>v0.1.0/py-scripts/</code>, then rebuild + publish.</li>
+  <li><strong>Auto-update channel</strong> → publish via <code>gh release create</code>. Every running copy picks it up within minutes.</li>
+</ul>
+</div>
+
+<div class="footer">
+ICF Creative Portfolio — User Guide. Maintained by Alex Gordon. Source for this document at <code>v0.1.0/docs/ICF_Portfolio_User_Guide.html</code>. Build guide for engineers at <code>v0.1.0/BUILD_GUIDE.md</code>.
+</div>
+
+</body>
+</html>
