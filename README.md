@@ -1,9 +1,9 @@
 # ICF Creative Portfolio — Desktop App
 
 Electron wrapper around the portfolio web app, so teammates can browse ICF Next's Box content with no URL, no server, no IT involvement.
-**Current version:** v0.5.1
+**Current version:** v0.5.2
 
-**Source location:** `/Users/36981/Desktop/ICF Portfolio App/v0.5.1/`
+**Source location:** `/Users/36981/Desktop/ICF Portfolio App/v0.5.2/`
 **Portfolio output:** `/Users/36981/Library/CloudStorage/Box-Box/Clients/BGE/portfolio-master/`
 
 ---
