@@ -1,9 +1,9 @@
 # ICF Creative Portfolio — Desktop App
 
 Electron wrapper around the portfolio web app, so teammates can browse ICF Next's Box content with no URL, no server, no IT involvement.
-**Current version:** v0.5.2
+**Current version:** v0.5.3
 
-**Source location:** `/Users/36981/Desktop/ICF Portfolio App/v0.5.2/`
+**Source location:** `/Users/36981/Desktop/ICF Portfolio App/v0.5.3/`
 **Portfolio output:** `/Users/36981/Library/CloudStorage/Box-Box/Clients/BGE/portfolio-master/`
 
 ---
@@ -27,7 +27,7 @@ Electron wrapper around the portfolio web app, so teammates can browse ICF Next'
 ## Running in dev
 
 ```bash
-cd "/Users/36981/Desktop/ICF Portfolio App/v0.5.1"
+cd "/Users/36981/Desktop/ICF Portfolio App/v0.5.3"
 npm install
 npm start
 ```
@@ -41,7 +41,7 @@ First run will prompt for your Box folder. Pick the top-level Box folder (usuall
 See `BUILD_GUIDE.md` for the full release process. Quick reference:
 
 ```bash
-cd "/Users/36981/Desktop/ICF Portfolio App/v0.5.1"
+cd "/Users/36981/Desktop/ICF Portfolio App/v0.5.3"
 export APPLE_ID="alexthebritgordon@gmail.com"
 export APPLE_APP_SPECIFIC_PASSWORD="bhrp-sljp-hlud-outa"
 export APPLE_TEAM_ID="9VRW78GQHM"
@@ -82,7 +82,7 @@ python3 py-scripts/build-portfolio.py --client <slug> --force
 
 ---
 
-## Key UI features (as of v0.5.1)
+## Key UI features (as of v0.5.3)
 
 - **Per-asset favorites & awards** — ⭐🏆 buttons on each thumbnail (Cards, List, Matrix views)
 - **Per-job favorites & awards** — ⭐🏆 buttons on job/project headers, stacked vertically (Cards and List views), and small 16×16px stacked vertically on the right in Matrix mini rows
@@ -94,4 +94,4 @@ python3 py-scripts/build-portfolio.py --client <slug> --force
 
 ## Performance notes
 
-- **Never use `backdrop-filter: blur()` on elements that render hundreds of times** (e.g., per-asset type badges `.ca-kind`, video play buttons, or per-row buttons in Matrix view). This creates GPU compositing layers for every instance and crashes Chromium with "tile memory limits exceeded" (the window will just suddenly disappear/close). Removed from all per-asset and button styles in v0.4.15/v0.5.1 (modal overlays are fine since only one renders at a time).
+- **Never use `backdrop-filter: blur()` on elements that render hundreds of times** (e.g., per-asset type badges `.ca-kind`, video play buttons, or per-row buttons in Matrix view). This creates GPU compositing layers for every instance and crashes Chromium with "tile memory limits exceeded" (the window will just suddenly disappear/close). Removed from all per-asset and button styles in v0.4.15/v0.5.3 (modal overlays are fine since only one renders at a time).

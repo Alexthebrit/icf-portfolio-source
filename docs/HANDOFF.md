@@ -25,10 +25,10 @@ You should see your name and account `103457025906`. If this fails, you haven't 
 ```bash
 # 1. Clone the project to your Desktop
 cd ~/Desktop
-git clone https://github.com/Alexthebrit/icf-portfolio-source.git "ICF Portfolio App/v0.5.1"
+git clone https://github.com/Alexthebrit/icf-portfolio-source.git "ICF Portfolio App/v0.5.3"
 
 # 2. Install the auto-refresh LaunchAgent
-cd "ICF Portfolio App/v0.5.1"
+cd "ICF Portfolio App/v0.5.3"
 bash scripts/install-aws-autorefresh.sh
 ```
 
@@ -46,7 +46,7 @@ launchctl list com.icf.aws-sso-refresh
 ## How to sync (whenever you want)
 
 ```bash
-bash ~/Desktop/"ICF Portfolio App/v0.5.1"/scripts/sync-to-s3.sh
+bash ~/Desktop/"ICF Portfolio App/v0.5.3"/scripts/sync-to-s3.sh
 ```
 
 It will:
