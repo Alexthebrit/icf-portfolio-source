@@ -99,9 +99,6 @@ async function checkForUpdatesNow() {
 }
 
 function scheduleStartupUpdateCheck(win) {
-  // Temporarily disabled to prevent auto-updater crashes on restricted networks
-  return;
-  
   if (_startupUpdateCheckStarted || !app.isPackaged || !win || win.isDestroyed()) return;
 
   const runUpdateCheck = () => {
