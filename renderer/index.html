@@ -2821,11 +2821,28 @@ function programGroupsForYear(y, filterUmbrella) {
     const inner = map.get(top);
     inner.set(sub, (inner.get(sub) || 0) + 1);
   }
+  
+  if (['bge', 'phi', 'comed'].includes(window.ACTIVE_CLIENT_SLUG)) {
+    let lmCount = 0;
+    for (const j of JOBS) {
+      if (y !== 'all' && j.year !== y) continue;
+      if (filterUmbrella && j.programPath && j.programPath[0] !== filterUmbrella) continue;
+      if (_isLoadManagementJob(j) || (j.assets || []).some(_isLoadManagementAsset)) {
+        lmCount++;
+      }
+    }
+    if (lmCount > 0) {
+      const top = 'Residential'; // Standard umbrella
+      if (!map.has(top)) map.set(top, new Map());
+      map.get(top).set('Load Management', lmCount);
+    }
+  }
+  
   return map;
 }
 
 function jobsForProgram(y, programLabel) {
-  return JOBS.filter(j => (y === 'all' || j.year === y) && j.programLabel === programLabel);
+  return _filterJobsByProgram(JOBS.filter(j => y === 'all' || j.year === y), programLabel);
 }
 
 function _kwNormName(s) {
@@ -2876,21 +2893,54 @@ function _assetMatchesCategory(asset, category) {
   return Array.isArray(asset && asset.categories) && asset.categories.includes(category);
 }
 
+function _isLoadManagementAsset(a) {
+  const nm = (a.name || '').toLowerCase();
+  return nm.includes('load management') || nm.includes('loadmanagement') ||
+         nm.includes('ld-mgmt') || nm.includes('ldmgmt') ||
+         /(?:^|[^a-z0-9])lm(?:[^a-z0-9]|\.|$)/.test(nm);
+}
+
+function _isLoadManagementJob(j) {
+  return j.programLabel === 'Load Management' || (j.folderName || '').toLowerCase().includes('load management');
+}
+
+function _filterJobsByProgram(jobs, programLabel) {
+  if (!programLabel) return jobs;
+  if (programLabel === 'Load Management') {
+    const out = [];
+    for (const j of jobs) {
+      if (_isLoadManagementJob(j)) {
+        out.push(j);
+      } else {
+        const matching = (j.assets || []).filter(_isLoadManagementAsset);
+        if (matching.length > 0) out.push({ ...j, assets: matching });
+      }
+    }
+    return out;
+  }
+  return jobs.filter(j => j.programLabel === programLabel);
+}
+
 function _filterJobsForFacetCounts(year, month, program, category) {
-  const out = [];
+  let out = [];
   for (const j of JOBS) {
     if (year !== 'all' && j.year !== year) continue;
     if (month != null && j.month !== month) continue;
-    if (program && j.programLabel !== program) continue;
     if (activeUmbrella && !((j.programPath && j.programPath[0] === activeUmbrella) || j.programLabel === activeUmbrella)) continue;
-    const assets = category
-      ? (j.assets || []).filter(a => _assetMatchesCategory(a, category))
-      : (j.assets || []);
-    // Only skip when filtering by category and none of the job's assets match.
-    // Without a category filter, include all jobs (matching how jobsIn() counts).
-    if (category && assets.length === 0) continue;
-    out.push(category ? { ...j, assets } : j);
+    out.push(j);
   }
+  
+  out = _filterJobsByProgram(out, program);
+  
+  if (category) {
+    const catOut = [];
+    for (const j of out) {
+      const assets = (j.assets || []).filter(a => _assetMatchesCategory(a, category));
+      if (assets.length > 0) catOut.push({ ...j, assets });
+    }
+    return catOut;
+  }
+  
   return out;
 }
 
@@ -3311,9 +3361,9 @@ function jobsForScope(scope) {
   } else if (scope.kind === 'month') {
     filtered = baseJobs.filter(j => j.year === scope.year && j.month === scope.month);
   } else if (scope.kind === 'program') {
-    filtered = baseJobs.filter(j => j.year === scope.year && j.programLabel === scope.program);
+    filtered = _filterJobsByProgram(baseJobs.filter(j => j.year === scope.year), scope.program);
   } else if (scope.kind === 'month-program') {
-    filtered = baseJobs.filter(j => j.year === scope.year && j.month === scope.month && j.programLabel === scope.program);
+    filtered = _filterJobsByProgram(baseJobs.filter(j => j.year === scope.year && j.month === scope.month), scope.program);
   } else if (scope.kind === 'type') {
     const out = [];
     const isKwt = scope.category && scope.category.startsWith('kwt:');
@@ -3456,10 +3506,10 @@ function render() {
     jobs = JOBS.filter(j => (view.year === 'all' || j.year === view.year) && j.month === view.month);
   } else if (view.kind === 'program') {
     title.innerHTML = `<em>${escapeHtml(view.program)}</em>` + (view.year === 'all' ? ` · All Years` : ` · ${view.year}`);
-    jobs = JOBS.filter(j => (view.year === 'all' || j.year === view.year) && j.programLabel === view.program);
+    jobs = _filterJobsByProgram(JOBS.filter(j => view.year === 'all' || j.year === view.year), view.program);
   } else if (view.kind === 'month-program') {
     title.innerHTML = `<em>${escapeHtml(view.program)}</em> · ${MONTH_NAMES[view.month-1]}` + (view.year === 'all' ? ` (All Years)` : ` ${view.year}`);
-    jobs = JOBS.filter(j => (view.year === 'all' || j.year === view.year) && j.month === view.month && j.programLabel === view.program);
+    jobs = _filterJobsByProgram(JOBS.filter(j => (view.year === 'all' || j.year === view.year) && j.month === view.month), view.program);
   } else if (view.kind === 'type') {
     title.innerHTML = `<em>${escapeHtml(view.category)}</em>` + (view.year === 'all' ? ` · All Years` : ` · ${view.year}`);
     jobs = _filterJobsForFacetCounts(view.year, null, null, view.category);
@@ -5615,7 +5665,7 @@ async function generatePDF() {
       jobs = jobs.filter(j => String(j.month) === String(mVal));
     }
     if (catVal !== 'all') jobs = jobs.filter(j => (j.categories || []).includes(catVal));
-    if (progVal !== 'all') jobs = jobs.filter(j => j.programLabel === progVal);
+    if (progVal !== 'all') jobs = _filterJobsByProgram(jobs, progVal);
     if (jobs.length === 0) {
       btn.textContent = 'Generate PDF';
       btn.disabled = false;
