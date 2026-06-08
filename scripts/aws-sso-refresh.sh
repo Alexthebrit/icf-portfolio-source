@@ -10,6 +10,8 @@
 
 set -euo pipefail
 
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
 AWS_PROFILE="sso-profile"
 REFRESH_WITHIN=$((90 * 60))  # 90 minutes in seconds
 

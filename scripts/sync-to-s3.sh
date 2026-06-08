@@ -15,6 +15,9 @@
 
 set -euo pipefail
 
+# Ensure Homebrew and local binaries are in PATH (crucial when run from macOS GUI apps)
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
 # ── Configuration ────────────────────────────────────────────────────────────
 AWS_PROFILE="sso-profile"
 S3_BUCKET="icfcreative-websitebucket-1iig2p33sr8sb"
