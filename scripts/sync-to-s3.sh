@@ -5,11 +5,13 @@
 # Electron app (Server mode). Can also be run manually:
 #   bash scripts/sync-to-s3.sh
 #
-# Requirements:
-#   - AWS CLI v2 installed (aws --version)
-#   - SSO profile configured: aws sso login --profile sso-profile
-#     (credentials are valid for 8 hours; the script will prompt to
-#     re-login if they've expired)
+# SSO credentials expire every 8 hours (IT policy). This script handles
+# that automatically — if they've expired, it opens your browser for a
+# one-click approval and then continues the sync. No terminal needed.
+#
+# For fully seamless operation (credentials refreshed before they expire),
+# install the LaunchAgent once with:
+#   bash scripts/install-aws-autorefresh.sh
 
 set -euo pipefail
 
@@ -19,31 +21,46 @@ S3_BUCKET="icfcreative-websitebucket-1iig2p33sr8sb"
 S3_PREFIX="2026/BGE/portfolio-master"
 BOX_FOLDER="${ICF_BOX_ROOT:-$HOME/Library/CloudStorage/Box-Box}"
 LOCAL_DIR="$BOX_FOLDER/Clients/BGE/portfolio-master"
+LOGIN_TIMEOUT=300  # seconds to wait for browser approval before giving up
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 log() { echo "[s3-sync] $*"; }
 
-# Check if SSO credentials are still valid; re-login if not.
+notify() {
+  # Show a macOS notification (works in background, no terminal needed)
+  osascript -e "display notification \"$1\" with title \"ICF Portfolio\" subtitle \"S3 Sync\"" 2>/dev/null || true
+}
+
 ensure_credentials() {
   if aws sts get-caller-identity --profile "$AWS_PROFILE" &>/dev/null; then
     return 0
   fi
 
-  log "SSO credentials expired — opening browser for re-authentication..."
-  aws sso login --profile "$AWS_PROFILE"
+  log "AWS credentials expired — opening browser for re-authentication..."
+  notify "AWS login required — check your browser"
+
+  # Run aws sso login with a timeout so we don't hang indefinitely
+  # if the user isn't at their Mac
+  if ! timeout "$LOGIN_TIMEOUT" aws sso login --profile "$AWS_PROFILE"; then
+    log "Login timed out or was cancelled. Sync skipped — will retry after next build."
+    notify "Login timed out. Sync skipped."
+    exit 0  # Exit cleanly — don't fail the build
+  fi
 
   # Verify after login
   if ! aws sts get-caller-identity --profile "$AWS_PROFILE" &>/dev/null; then
-    log "ERROR: Authentication failed. Cannot sync."
-    exit 1
+    log "Authentication failed. Sync skipped."
+    notify "Authentication failed. Check AWS access."
+    exit 0
   fi
-  log "Authentication successful."
+
+  log "Authentication successful — continuing sync."
+  notify "AWS login successful — syncing..."
 }
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 if [ ! -d "$LOCAL_DIR" ]; then
   log "ERROR: portfolio-master not found at $LOCAL_DIR"
-  log "Is Box Drive mounted? Set ICF_BOX_ROOT env var if your Box folder is elsewhere."
   exit 1
 fi
 
@@ -66,4 +83,5 @@ aws s3 sync "$LOCAL_DIR" "$S3_DEST" \
   --exclude "dev-index.html" \
   --no-progress
 
-log "Sync complete. Web version is now up to date."
+log "Sync complete — web version is now up to date."
+notify "Sync complete — web version updated"

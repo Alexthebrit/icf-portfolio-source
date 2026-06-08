@@ -1,7 +1,7 @@
 {
   "name": "icf-portfolio",
   "productName": "ICF Creative Portfolio",
-  "version": "0.4.15",
+  "version": "0.5.1",
   "description": "Browse ICF Next's creative work from your local Box mount",
   "main": "main.js",
   "author": "Alex Gordon, ICF Next",

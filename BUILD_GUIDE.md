@@ -3,7 +3,7 @@
 **Version:** 1.3
 **Last updated:** 2026-06-01
 **Maintainer:** Alex Gordon (`amgphotoshop@gmail.com` / `alexthebritgordon@gmail.com`)
-**App version at time of writing:** v0.4.15
+**App version at time of writing:** v0.5.1
 
 ---
 
