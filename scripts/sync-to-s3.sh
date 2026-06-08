@@ -40,8 +40,15 @@ ensure_credentials() {
   notify "AWS login required — check your browser"
 
   # Run aws sso login with a timeout so we don't hang indefinitely
-  # if the user isn't at their Mac
-  if ! timeout "$LOGIN_TIMEOUT" aws sso login --profile "$AWS_PROFILE"; then
+  # if the user isn't at their Mac (macOS-compatible, no `timeout` command needed)
+  aws sso login --profile "$AWS_PROFILE" &
+  LOGIN_PID=$!
+  ( sleep "$LOGIN_TIMEOUT" && kill "$LOGIN_PID" 2>/dev/null ) &
+  TIMER_PID=$!
+  wait "$LOGIN_PID" 2>/dev/null && LOGIN_OK=true || LOGIN_OK=false
+  kill "$TIMER_PID" 2>/dev/null; wait "$TIMER_PID" 2>/dev/null
+
+  if ! $LOGIN_OK; then
     log "Login timed out or was cancelled. Sync skipped — will retry after next build."
     notify "Login timed out. Sync skipped."
     exit 0  # Exit cleanly — don't fail the build
